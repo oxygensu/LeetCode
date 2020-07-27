@@ -191,8 +191,7 @@ int main(int argc, const char * argv[]) {
         cout<<"i = "<<i<<endl;
         for(int j=0; j< result[i].size(); j++){
             cout<<result[i][j]<<endl;
-            
-        }   
+        }
         cout<<endl;
     }
 
