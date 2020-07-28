@@ -98,7 +98,7 @@ private:
         generate(i+1, candidates, target, sum+candidates[i], item, result, res_set);
         item.pop_back();
         generate(i+1, candidates, target, sum, item, result, res_set);
-        
+
     }
 };
 
@@ -177,22 +177,85 @@ public:
             }
         }
     }
+
 };
 
-int main(int argc, const char * argv[]) {
+class LeetCodeMergeSort
+{
+public:
+/**********************************
+分治算法：
+    1、分解，将要解决的问题划分成若干规模较小的同类问题
+    2、求解，当子问题划分的足够小时，用较简单的方法解决
+    3、合并，将子问题的解逐层合并，构成原问题的解
+**********************************/
     
-    vector<vector<string>> result;
+    void merge_sort_two_vec(vector<int> &sub_vec1, vector<int> &sub_vec2, vector<int> &vec){
+        int i = 0;
+        int j = 0;
+        while(i<sub_vec1.size()&&j<sub_vec2.size()){
+            if(sub_vec1[i]<=sub_vec2[j]){
+                vec.push_back(sub_vec1[i]);
+                i++;
+            }
+            else{
+                vec.push_back(sub_vec2[j]);
+                j++;
+            }
+        }
+            
+        for(;i<sub_vec1.size();i++){
+            vec.push_back(sub_vec1[i]);
+        }
+        for(;j<sub_vec2.size();j++){
+            vec.push_back(sub_vec2[j]);
+        }
+    }
     
-    LeetCode51 solve;
-    result = solve.solveNQueue(4);
+    void merge_sort(vector<int> &vec){
+        if(vec.size()<2){
+            return;
+        }
+        int mid = vec.size()/2;
+        vector<int> sub_vec1;
+        vector<int> sub_vec2;
+        for(int i=0; i<mid; i++){
+            sub_vec1.push_back(vec[i]);
+        }
+        for(int i=mid; i<vec.size(); i++){
+            sub_vec2.push_back(vec[i]);
+        }
+
+        merge_sort(sub_vec1);
+        merge_sort(sub_vec2);
+        vec.clear();
+        merge_sort_two_vec(sub_vec1, sub_vec2, vec);
+    }
+};
+
+class LeetCode315{
+public:
+    vector<int> countSmaller(vector<int> &nums){
+        
+    }
+};
+
+int main(int argc, const char * argv[])
+{
+
+    vector<int> result = {2,5,1,6,3};
 
     for(int i=0; i<result.size(); i++)
     {
-        cout<<"i = "<<i<<endl;
-        for(int j=0; j< result[i].size(); j++){
-            cout<<result[i][j]<<endl;
-        }
-        cout<<endl;
+        cout<<result[i]<<" ";
+    }
+    cout<<endl;
+    LeetCodexx solve;
+    solve.merge_sort(result);
+
+    for(int i=0; i<result.size(); i++)
+    {
+        cout<<result[i]<<" ";
     }
 
     return 0;
