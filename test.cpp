@@ -5,7 +5,7 @@
 //  Created by 苏树祥 on 2020/1/30.
 //  Copyright © 2020 苏树祥. All rights reserved.
 //
-#include "test.h"
+// #include "test.h"
 #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <string>
 #include <time.h>
+#include <map>
 using namespace std;
 class BitOperate
 {
@@ -225,7 +226,7 @@ public:
             result.push_back(location);
             return;
         }
-        if (k = l)
+        if (k == l)
         {
             for (int i = 0; i < n; i++)
             {
@@ -421,38 +422,197 @@ public:
     }
 };
 
+/*
+前序遍历：根左右
+*/
+class LeetCode144
+{
+public:
+    vector<int> preorderTraversal(TreeNode* root) 
+    {
+        vector<int> result;
+        generate(root, result);
+        return result;
+    }
+    void generate(TreeNode* root, vector<int>& result)
+    {
+        if(root==NULL)
+            return;
+        result.push_back(root->val);//根
+        generate(root->left, result);//左
+        generate(root->right, result);//右
+    }
+};
+
+/*
+后序遍历：左右根
+*/
+class LeetCode145
+{
+public:
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> result;
+        generate(root, result);
+        return result;
+    }
+    void generate(TreeNode* root, vector<int>& result){
+        if(root==NULL)
+            return;
+        generate(root->left, result);//左
+        generate(root->right, result);//右
+        result.push_back(root->val);//根
+    }
+};
+
+/*
+中序遍历：左中右
+*/
+class LeetCode94
+{
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> result;
+        generate(root, result);
+        return result;
+    }
+    void generate(TreeNode* root, vector<int>& result){
+        if(root==NULL)
+            return;
+        generate(root->left, result);//左
+        result.push_back(root->val);//中
+        generate(root->right, result);//右
+    }
+};
+
+/*
+给定二叉搜索树的根结点 root，返回 L 和 R（含）之间的所有结点的值的和。
+二叉搜索树保证具有唯一的值。
+
+输入：root = [10,5,15,3,7,null,18], L = 7, R = 15
+输出：32
+*/
+class LeetCode938 {
+public:
+    int rangeSumBST(TreeNode* root, int L, int R) {
+        int sum = 0;
+        generate(root, L, R, sum);
+        return sum; 
+    }
+
+    void generate(TreeNode *root, int L, int R, int& sum){
+        if(root == NULL)
+            return;
+        if( root->val >= L && root->val <= R){
+            sum += root->val;
+        }
+        generate(root->left, L, R, sum);
+        generate(root->right, L, R, sum);
+    }
+};
+
+/*
+409. 最长回文串
+给定一个包含大写字母和小写字母的字符串，找到通过这些字母构造成的最长的回文串。
+
+在构造过程中，请注意区分大小写。比如 "Aa" 不能当做一个回文字符串。
+
+注意:
+假设字符串的长度不会超过 1010。
+
+示例 1:
+
+输入:
+"abccccdd"
+
+输出:
+7
+
+解释:
+我们可以构造的最长的回文串是"dccaccd", 它的长度是 7。
+*/
+class LeetCode409 {
+public:
+    int longestPalindrome(string s) {
+        map<char, int> hash;
+        for(int i=0; i<s.size(); i++){
+            hash[s[i]] += 1; 
+        }
+        map<char, int>::iterator it = hash.begin();
+        // check each hash
+        int result = 0;
+        int center = 0;
+        while( it != hash.end()){
+            
+            if(it->second%2==0){
+                result += it->second;
+            }
+            else{
+                    result += it->second - 1;
+                    center = 1;
+            }
+            // cout<<it->first<< "" <<result<<endl;
+            it++;
+        }
+        return result + center;
+    }
+};
+
+/*
+290. 单词规律
+给定一种规律 pattern 和一个字符串 str ，判断 str 是否遵循相同的规律。
+
+这里的 遵循 指完全匹配，例如， pattern 里的每个字母和字符串 str 中的每个非空单词之间存在着双向连接的对应规律。
+
+示例1:
+
+输入: pattern = "abba", str = "dog cat cat dog"
+输出: true
+*/
+/*
+
+*/
+class LeetCode290 {
+public:
+    bool wordPattern(string pattern, string str) {
+        str.push_back(' '); //加入一个空格，让所有的子单词都能被获取
+        map<string, char> hash_map;//
+        char used[128] = {0};//初始化一个存字母的地方
+        string subWord;//存子单词
+        int pos = 0;//存字母下标
+        for( int i=0; i<str.size(); i++ ){//遍历字符串，取出所有的子单词
+            if( str[i]== ' ' ){//遇到空格，说明取到一个子单词
+                if(pos==pattern.size())//如果下标等于字母长度，那么说明子单词个数多于字母个数，返回false
+                    return false;
+                if( hash_map.find(subWord) == hash_map.end() ){//判断hash是否有子单词
+                    if(used[pattern[pos]])//无子单词，并且字母存在，则返回false
+                        return false;
+                    hash_map[subWord] = pattern[pos];//字母不存在，保存子单词和字母
+                    used[pattern[pos]] = 1;
+                }
+                else{//找到了
+                    if(hash_map[subWord]!=pattern[pos])//如果当前子单词已经有别的映射，则返回false
+                        return false;
+                }
+                subWord = "";//清空子单词
+                pos++;//增加下标
+            }
+            else{
+                subWord += str[i];
+            }
+        }
+        if(pos!=pattern.size())//遍历完字符串，判断下标是否等于字母长度，不等于则字母长度大于子单词个数，返回false
+            return false;
+        return true;
+    }
+};
+
 int main(int argc, const char *argv[])
 {
-    TreeNode a(5);
-    TreeNode b(4);
-    TreeNode c(8);
-    TreeNode d(11);
-    TreeNode e(13);
-    TreeNode f(4);
-    TreeNode g(7);
-    TreeNode h(2);
-    TreeNode x(5);
-    TreeNode y(1);
-    a.left = &b;
-    a.right = &c;
-    b.left = &d;
-    c.left = &e;
-    c.right = &f;
-    d.left = &g;
-    d.right = &h;
-    f.left = &x;
-    f.right = &y;
-    vector<vector<int>> result;
-    LeetCode113 solve;
-    result = solve.pathSum(&a, 22);
-    for (int i = 0; i < result.size(); i++)
-    {
-        for (int j = 0; j < result[i].size(); j++)
-        {
-            cout << result[i][j];
-        }
-        cout << endl;
-    }
+    string pattern = "aabb";
+    string str = "dog dog cat cat";
+    LeetCode290 solve;
+    cout<<solve.wordPattern(pattern, str)<<endl;;
 
     return 0;
 }
